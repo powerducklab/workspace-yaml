@@ -1,0 +1,79 @@
+{
+  "name": "@powerduck/workspace-yaml",
+  "version": "0.2.1",
+  "description": "Initialize workspace.yaml and OpenAPI 3.2 YAML files with confidence. Two-layer architecture: browser-safe core for generating YAML content, plus Node.js/Electron file layer that reuses @powerduck/conf-patch for atomic writes and locking.",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./core": {
+      "types": "./dist/core.d.ts",
+      "import": "./dist/core.js",
+      "require": "./dist/core.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "clean": "rm -rf dist coverage",
+    "build": "tsc --noEmit && tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "demo": "tsx demo/demo.ts",
+    "demo:browser": "tsx demo/browser-demo.ts",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "yaml",
+    "workspace",
+    "openapi",
+    "openapi-3.2",
+    "initializer",
+    "scaffold",
+    "electron",
+    "browser-safe",
+    "atomic-write",
+    "file-lock",
+    "conf-patch",
+    "powerduck"
+  ],
+  "license": "MIT",
+  "author": "Powerduck limited",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/powerducklab/workspace-yaml.git"
+  },
+  "bugs": {
+    "url": "https://github.com/powerducklab/workspace-yaml/issues"
+  },
+  "homepage": "https://github.com/powerducklab/workspace-yaml#readme",
+  "dependencies": {
+    "@powerduck/conf-patch": "^0.3.2",
+    "@powerduck/openapi-parser": "^0.3.3",
+    "yaml": "^2.9.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.43",
+    "terser": "^5.51.2",
+    "tsup": "^8.1.0",
+    "tsx": "^4.23.12",
+    "typescript": "^5.5.0",
+    "vitest": "^2.0.0"
+  }
+}
