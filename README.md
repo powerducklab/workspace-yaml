@@ -1,5 +1,9 @@
 # @powerduck/workspace-yaml
 
+[![npm version](https://img.shields.io/npm/v/@powerduck/workspace-yaml)](https://www.npmjs.com/package/@powerduck/workspace-yaml)
+[![license](https://img.shields.io/npm/l/@powerduck/workspace-yaml)](https://github.com/powerducklab/workspace-yaml/blob/main/LICENSE)
+[![website](https://img.shields.io/badge/website-powerduck.com-blue)](https://www.powerduck.com/)
+
 > Initialize workspace.yaml and OpenAPI 3.2 YAML files with confidence.
 
 Production-grade YAML workspace initializer with a two-layer architecture:
@@ -284,11 +288,11 @@ import { readConfigFile, setConfigValue, patchConfigFile } from "@powerduck/conf
 const workspace = await readConfigFile("./my-project/workspace.yaml");
 
 // Update a single value
-await setConfigValue("./my-project/workspace.yaml", "activeOasFileId", "new-api");
+await setConfigValue("./my-project/workspace.yaml", ["activeOasFileId"], "new-api");
 
 // Batch patch (RFC 6902)
 await patchConfigFile("./my-project/workspace.yaml", [
-  { op: "add", path: "/oasFiles/-", value: { id: "new-api", name: "New API", file: "..." } },
+  { op: "add", path: ["oasFiles", "-"], value: { id: "new-api", name: "New API", file: "..." } },
 ]);
 ```
 
