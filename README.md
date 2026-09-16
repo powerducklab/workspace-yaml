@@ -332,6 +332,14 @@ Outputs:
 - `dist/core.cjs` — CJS build
 - TypeScript declarations (`.d.ts`)
 
+## Links
+
+- [Official Website](https://www.powerduck.com/opensource/workspace-yaml.html)
+- [Documentation](https://www.powerduck.com/docs/workspace-yaml/introduction/)
+- [Live Demo](https://www.powerduck.com/demo/workspace-yaml)
+- [GitHub](https://github.com/powerducklab/workspace-yaml)
+- [npm](https://www.npmjs.com/package/@powerduck/workspace-yaml)
+
 ## License
 
 MIT © Powerduck limited
