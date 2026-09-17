@@ -84,11 +84,11 @@ function validateOasFileEntry(entry: OasFileEntry, index: number): void {
     );
   }
 
-  // Ensure YAML extension
-  if (!/\.ya?ml$/i.test(entry.file)) {
+  // Workspace entries may reference YAML or JSON OpenAPI documents.
+  if (!/\.(ya?ml|json)$/i.test(entry.file)) {
     throw new WorkspaceYamlError(
       "INVALID_ARGUMENT",
-      `oasFiles[${index}].file must have a .yaml or .yml extension.`,
+      `oasFiles[${index}].file must have a .yaml, .yml or .json extension.`,
     );
   }
 }

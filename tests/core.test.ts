@@ -79,10 +79,10 @@ describe("createWorkspaceYaml", () => {
     ).toThrow(WorkspaceYamlError);
   });
 
-  it("throws on oasFile without yaml extension", () => {
+  it("throws on unsupported OpenAPI file extension", () => {
     expect(() =>
       createWorkspaceYaml({
-        oasFiles: [{ id: "bad", name: "Bad", file: "oasFiles/bad.json" }],
+        oasFiles: [{ id: "bad", name: "Bad", file: "oasFiles/bad.txt" }],
       }),
     ).toThrow(WorkspaceYamlError);
   });
@@ -412,4 +412,9 @@ oasFiles:
     expect(parsed.activeOasFileId).toBe("api-v1");
     expect(parsed.oasFiles[0].name).toBe("API v1");
   });
+});
+
+it("round-trips existing JSON OpenAPI workspace paths",()=>{
+ const config={oasFiles:[{id:"json",name:"JSON API",file:"oasFiles/api.json"}],activeOasFileId:"json"};
+ expect(parseWorkspaceYaml(createWorkspaceYaml(config)).oasFiles).toEqual(config.oasFiles);
 });
