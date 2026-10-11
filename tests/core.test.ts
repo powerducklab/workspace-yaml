@@ -418,3 +418,7 @@ it("round-trips existing JSON OpenAPI workspace paths",()=>{
  const config={oasFiles:[{id:"json",name:"JSON API",file:"oasFiles/api.json"}],activeOasFileId:"json"};
  expect(parseWorkspaceYaml(createWorkspaceYaml(config)).oasFiles).toEqual(config.oasFiles);
 });
+
+it.each(['../secret.yaml', 'nested/../../secret.yaml', 'C:/secret.yaml', 'C:secret.yaml', '//server/a.yaml', 'a\u0000.yaml'])("rejects escaping registry path %s", file => {
+  expect(() => createWorkspaceYaml({oasFiles:[{id:'unsafe',name:'unsafe',file}]})).toThrow();
+});

@@ -77,7 +77,7 @@ function validateOasFileEntry(entry: OasFileEntry, index: number): void {
   }
 
   // Ensure relative path (not absolute)
-  if (entry.file.startsWith("/")) {
+  if (entry.file.startsWith("/") || /^[a-zA-Z]:/.test(entry.file) || entry.file.includes("\0") || entry.file.split("/").includes("..")) {
     throw new WorkspaceYamlError(
       "INVALID_ARGUMENT",
       `oasFiles[${index}].file must be a workspace-relative path, not absolute.`,
