@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { mkdtemp, rm, readFile, stat } from "node:fs/promises";
+import { mkdtemp, rm, readFile, stat, writeFile, symlink } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { parseDocument } from "yaml";
@@ -398,5 +398,23 @@ describe("createWorkspaceApi", () => {
     const content = await readFile(result.workspaceFilePath, "utf8");
     expect(content).toContain("oasFiles/my-api.openapi.yaml");
     expect(content).not.toContain("\\\\");
+  });
+});
+
+
+describe("preserving existing workspace data on read failures", () => {
+  it("does not replace an invalid registry when adding an API", async () => {
+    const file = path.join(tempDir, "workspace.yaml");
+    const original = "version: 1\noasFiles: [broken\n";
+    await writeFile(file, original);
+    await expect(createWorkspaceApi({ workspaceDirectory: tempDir, oasId: "new", name: "New API", file: "new.yaml" })).rejects.toThrow();
+    expect(await readFile(file, "utf8")).toBe(original);
+    await expect(stat(path.join(tempDir, "new.yaml"))).rejects.toMatchObject({ code: "ENOENT" });
+  });
+
+  it("does not replace a dangling symlink with overwrite disabled", async () => {
+    const file = path.join(tempDir, "workspace.yaml");
+    await symlink(path.join(tempDir, "missing.yaml"), file);
+    await expect(initializeWorkspace({ directory: tempDir })).rejects.toMatchObject({ code: "ALREADY_EXISTS" });
   });
 });

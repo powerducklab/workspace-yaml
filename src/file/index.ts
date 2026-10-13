@@ -9,7 +9,7 @@
  * Use `@powerduck/workspace-yaml/core` instead.
  */
 
-import { mkdir, rm } from "node:fs/promises";
+import { lstat, mkdir, rm } from "node:fs/promises";
 import path from "node:path";
 
 import {
@@ -53,16 +53,14 @@ async function ensureDirectory(directoryPath: string): Promise<void> {
   }
 }
 
-/**
- * Checks if a file exists by attempting to read it.
- * Reuses conf-patch's readConfigFile for consistency.
- */
+/** Never interpret unreadable or malformed existing data as a missing file. */
 async function fileExists(filePath: string): Promise<boolean> {
   try {
-    await readConfigFile(filePath);
+    await lstat(filePath);
     return true;
-  } catch {
-    return false;
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return false;
+    throw new WorkspaceYamlError("IO_ERROR", `Failed to inspect file: ${filePath}`, filePath, error);
   }
 }
 
@@ -343,12 +341,9 @@ export async function createWorkspaceApi(
       // If workspace exists, we need to read it and add the API entry
       let existingWorkspace: WorkspaceConfig | null = null;
 
-      try {
+      if (await fileExists(workspaceFilePath)) {
         const existingContent = await readConfigFile(workspaceFilePath);
         existingWorkspace = parseWorkspaceYaml(existingContent);
-      } catch {
-        // Workspace doesn't exist yet, we'll create it
-        existingWorkspace = null;
       }
 
       if (existingWorkspace !== null) {
@@ -372,12 +367,9 @@ export async function createWorkspaceApi(
       }
 
       // Save original OpenAPI content for rollback
-      let originalOpenApiContent: string | undefined;
-      try {
-        originalOpenApiContent = await readConfigFile(openApiFilePath);
-      } catch {
-        originalOpenApiContent = undefined;
-      }
+      const originalOpenApiContent = await fileExists(openApiFilePath)
+        ? await readConfigFile(openApiFilePath)
+        : undefined;
 
       // Step 1: Write OpenAPI file
       try {
