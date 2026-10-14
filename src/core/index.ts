@@ -76,11 +76,15 @@ function validateOasFileEntry(entry: OasFileEntry, index: number): void {
     );
   }
 
-  // Ensure relative path (not absolute)
-  if (entry.file.startsWith("/") || /^[a-zA-Z]:/.test(entry.file) || entry.file.includes("\0") || entry.file.split("/").includes("..")) {
+  if (entry.location !== undefined && entry.location !== "workspace" && entry.location !== "external") {
+    throw new WorkspaceYamlError("INVALID_ARGUMENT", `oasFiles[${index}].location must be workspace or external.`);
+  }
+  const absolute = entry.file.startsWith("/") || /^[a-zA-Z]:\//.test(entry.file);
+  const traversal = entry.file.split("/").some(segment => segment === ".." || segment === ".");
+  if (entry.file.includes("\0") || traversal || (entry.location === "external" ? !absolute : absolute || /^[a-zA-Z]:/.test(entry.file))) {
     throw new WorkspaceYamlError(
       "INVALID_ARGUMENT",
-      `oasFiles[${index}].file must be a workspace-relative path, not absolute.`,
+      `oasFiles[${index}].file must be ${entry.location === "external" ? "an absolute external" : "a workspace-relative"} path without traversal.`,
     );
   }
 

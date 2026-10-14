@@ -422,3 +422,17 @@ it("round-trips existing JSON OpenAPI workspace paths",()=>{
 it.each(['../secret.yaml', 'nested/../../secret.yaml', 'C:/secret.yaml', 'C:secret.yaml', '//server/a.yaml', 'a\u0000.yaml'])("rejects escaping registry path %s", file => {
   expect(() => createWorkspaceYaml({oasFiles:[{id:'unsafe',name:'unsafe',file}]})).toThrow();
 });
+
+it("round-trips explicitly external documents and their active id", () => {
+  for (const file of ["/Users/me/API.yaml", "C:/Users/me/API.json", "//server/share/API.yml"]) {
+    const yaml = createWorkspaceYaml({activeOasFileId:"external",oasFiles:[{id:"external",name:"API",file,location:"external"}]});
+    expect(parseWorkspaceYaml(yaml).oasFiles[0]).toMatchObject({file,location:"external"});
+    expect(parseWorkspaceYaml(yaml).activeOasFileId).toBe("external");
+  }
+});
+it("does not allow external paths to bypass entry validation", () => {
+  for (const file of ["../api.yaml", "api.yaml", "/a/../api.yaml", "C:api.yaml", "/a/api.txt"]) {
+    expect(()=>createWorkspaceYaml({oasFiles:[{id:"e",name:"API",file,location:"external"}]})).toThrow();
+  }
+  expect(()=>createWorkspaceYaml({oasFiles:[{id:"e",name:"API",file:"/tmp/api.yaml"}]})).toThrow();
+});

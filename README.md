@@ -348,3 +348,27 @@ MIT © Powerduck limited
 
 - [`@powerduck/conf-patch`](https://github.com/powerducklab/conf-patch) — Two-layer configuration editor with atomic writes and locking
 - [`@powerduck/openapi-parser`](https://github.com/powerducklab/openapi-parser) — Upgrade and validate OpenAPI documents to 3.2
+
+### External documents and startup restoration
+
+`activeOasFileId` is the single persisted active-document selector. It always
+references an entry in `oasFiles`. A desktop application can record a file the
+user explicitly opened outside the workspace with `location: external`:
+
+```yaml
+version: 1
+activeOasFileId: customer-api
+oasFiles:
+  - id: customer-api
+    name: customers.yaml
+    location: external
+    file: /Users/example/Documents/customers.yaml
+```
+
+Without `location`, paths remain workspace-relative. `location: external`
+requires an absolute path with forward slashes (including Windows drive/UNC
+paths). Traversal segments and non-YAML/JSON extensions remain invalid. These
+external references are machine-local; applications must validate file access
+and must not treat a workspace imported from another source as authorization to
+write arbitrary files. The library validates the representation; it does not
+open or write the external files.

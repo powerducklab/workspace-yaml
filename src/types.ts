@@ -13,7 +13,9 @@ export interface OasFileEntry {
   id: string;
   /** Human-readable display name of the API. */
   name: string;
-  /** Workspace-relative path to the OpenAPI YAML file (POSIX separators). */
+  /** Explicitly marks a user-selected external absolute path. Omitted means workspace-relative. */
+  location?: "workspace" | "external";
+  /** OpenAPI YAML/JSON path using POSIX separators; absolute only for location: external. */
   file: string;
 }
 
