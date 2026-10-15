@@ -1,6 +1,6 @@
 {
   "name": "@powerduck/workspace-yaml",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "description": "Initialize workspace.yaml and OpenAPI 3.2 YAML files with confidence. Two-layer architecture: browser-safe core for generating YAML content, plus Node.js/Electron file layer that reuses @powerduck/conf-patch for atomic writes and locking.",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -26,7 +26,7 @@
   ],
   "sideEffects": false,
   "engines": {
-    "node": ">=22.0.0"
+    "node": ">=22.12.0"
   },
   "scripts": {
     "clean": "rm -rf dist coverage",
@@ -64,8 +64,8 @@
   },
   "homepage": "https://www.powerduck.com/",
   "dependencies": {
-    "@powerduck/conf-patch": "^0.3.7",
-    "@powerduck/openapi-parser": "^0.3.11",
+    "@powerduck/conf-patch": "^0.3.8",
+    "@powerduck/openapi-parser": "^0.3.12",
     "yaml": "^2.9.0"
   },
   "devDependencies": {
